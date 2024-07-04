@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id        Int     @id @default(autoincrement())
+  id        String     @id @default(cuid())
   name      String
   email     String  @unique
   clerkId   String  @unique
@@ -20,12 +20,12 @@ model User {
 }
 
 model Art {
-  id          Int      @id @default(autoincrement())
+  id          String     @id @default(cuid())
   bgcolor     String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   isPublished Boolean  @default(false)
   isDeleted   Boolean  @default(false)
-  creatorId   Int
+  creatorId   String
   creator     User     @relation(fields: [creatorId], references: [id])
 }
