@@ -21,7 +21,7 @@ app.use(cors({
 // Clerk webhook to handle user creation
 app.post('/clerk-webhook', async (req, res) => {
     const { type, data } = req.body;
-    console.log('Webhook received:', req.body); // Log the incoming request
+    console.log('Webhook received:', req.body);
 
     if (type === 'user.created') {
         const { id: clerkId, email_addresses, first_name, last_name, profile_image_url } = data;
@@ -30,7 +30,7 @@ app.post('/clerk-webhook', async (req, res) => {
         const avatarUrl = profile_image_url;
 
         if (!email) {
-            console.log('Email not provided in the webhook data'); // Log missing email
+            console.log('Email not provided in the webhook data');
             return res.status(400).json({ error: 'Email not provided' });
         }
 
@@ -44,21 +44,21 @@ app.post('/clerk-webhook', async (req, res) => {
                     avatarUrl,
                 },
             });
-            console.log('User created:', user); // Log the created user
+            console.log('User created:', user);
 
             return res.status(200).json({ message: 'User created successfully' });
         } catch (error) {
-            console.error('Error creating user:', error); // Log the error
+            console.error('Error creating user:', error);
             return res.status(500).json({ error: 'Failed to create user' });
         }
     }
 
-    console.log('Unhandled event type:', type); // Log unhandled event type
+    console.log('Unhandled event type:', type);
     res.status(200).json({ error: 'Unhandled event type' });
 });
 
 // Endpoint to save background color
-app.post('/backgrounds', requireAuth(async (req: Request, res: Response) => {
+app.post('/backgrounds', requireAuth(), async (req: Request, res: Response) => {
     console.log('Request received on /backgrounds');
     console.log('Request headers:', req.headers);
     console.log('Request body:', req.body);
@@ -76,7 +76,7 @@ app.post('/backgrounds', requireAuth(async (req: Request, res: Response) => {
         });
 
         if (!user) {
-            console.log('User not found in the database'); // Log user not found
+            console.log('User not found in the database');
             return res.status(404).json({ error: 'User not found' });
         }
 
@@ -88,14 +88,14 @@ app.post('/backgrounds', requireAuth(async (req: Request, res: Response) => {
                 creatorId: user.id,  // Store the user's database ID
             },
         });
-        console.log('Art saved:', newArt); // Log the created art
+        console.log('Art saved:', newArt);
         res.status(200).json(newArt);
     } catch (error: any) {
-        console.error('Error saving background:', error.message); // Log the error
+        console.error('Error saving background:', error.message);
         console.error(error.stack);
         res.status(500).json({ error: 'Failed to save background' });
     }
-}));
+});
 
 const PORT = process.env.PORT || 3002;
 app.listen(PORT, () => {

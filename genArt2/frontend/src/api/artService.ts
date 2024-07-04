@@ -1,6 +1,14 @@
 const API_URL = 'http://localhost:3002'; // Define your backend API URL
 
+import { PrismaClient } from '@prisma/client';
+import { useAuth } from '@clerk/clerk-react';
+
+
+
+const prisma = new PrismaClient();
+
 export const getArt = async (bgcolor: string, token: string) => {
+
     try {
         const response = await fetch(`${API_URL}/backgrounds?bgcolor=${bgcolor}`, {
             method: 'GET',
@@ -22,7 +30,36 @@ export const getArt = async (bgcolor: string, token: string) => {
     }
 };
 
-export const saveArt = async (bgcolor: string, clerkId: string, token: string | null) => {
+export const postArt = async (bgcolor: string, token: string) => {
+
+    try {
+        const response = await fetch(`${API_URL}/backgrounds`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`, // Use the obtained token
+            },
+            body: JSON.stringify({ bgcolor }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to post data');
+        }
+
+        const result = await response.json();
+        return {
+            ...result,
+            createdAt: new Date(result.createdAt).toISOString(),
+            updatedAt: new Date(result.updatedAt).toISOString(),
+        };
+    } catch (error) {
+        console.error('Error posting art:', error);
+        return null;
+    }
+};
+
+export const saveArt = async (bgcolor: string, clerkId: string, token: string) => {
+
     try {
         console.log('Token obtained:', token);
 
