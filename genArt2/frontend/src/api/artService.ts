@@ -1,16 +1,13 @@
-import { Art } from '@shared/types/models';
-
 const API_URL = 'http://localhost:3002'; // Define your backend API URL
 
-export const getArt = async (bgcolor: string, getToken: () => Promise<string | null>) => {
+export const getArt = async (bgcolor: string, token: string) => {
     try {
-        const response = await fetch(`${API_URL}/backgrounds`, {
+        const response = await fetch(`${API_URL}/backgrounds?bgcolor=${bgcolor}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${await getToken()}`,
+                'Authorization': `Bearer ${token}`,
             },
-            body: JSON.stringify({ bgcolor }),
         });
 
         if (!response.ok) {
@@ -25,22 +22,35 @@ export const getArt = async (bgcolor: string, getToken: () => Promise<string | n
     }
 };
 
-export const saveArt = async (bgcolor: string, getToken: () => Promise<string | null>) => {
+export const saveArt = async (bgcolor: string, clerkId: string, token: string | null) => {
     try {
-        const response = await fetch(`${API_URL}/backgrounds`, {
+        console.log('Token obtained:', token);
+
+        const requestOptions = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${await getToken()}`,
+                'Authorization': `Bearer ${token}`,
             },
-            body: JSON.stringify({ bgcolor }),
-        });
+            body: JSON.stringify({ bgcolor, creatorId: clerkId }),
+        };
+
+        console.log('Request options:', requestOptions);
+
+        const response = await fetch(`${API_URL}/backgrounds`, requestOptions);
+
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
 
         if (!response.ok) {
-            throw new Error('Failed to save art');
+            const errorText = await response.text();
+            console.error('Response error text:', errorText);
+            throw new Error(`Failed to save art: ${response.statusText}`);
         }
 
         const result = await response.json();
+        console.log('Response JSON:', result);
+
         return result;
     } catch (error) {
         console.error('Error saving art:', error);
