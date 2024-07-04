@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int     @id @default(autoincrement())
+  name      String
+  email     String  @unique
+  clerkId   String  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isDeleted Boolean @default(false)
+  avatarUrl String?
+  arts      Art[]
+}
+
+model Art {
+  id          Int      @id @default(autoincrement())
+  bgcolor     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  isPublished Boolean  @default(false)
+  isDeleted   Boolean  @default(false)
+  creatorId   Int
+  creator     User     @relation(fields: [creatorId], references: [id])
+}
