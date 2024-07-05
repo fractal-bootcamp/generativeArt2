@@ -22,3 +22,7 @@ export interface Art {
     creatorId: number;
     creator: User;
 }
+
+export interface Token {
+    token: string;
+}
