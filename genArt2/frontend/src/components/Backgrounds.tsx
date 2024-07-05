@@ -34,6 +34,8 @@ const Backgrounds: React.FC = () => {
 
         if (backgroundColor === null) {
             backgroundColor = '';
+        } else if (typeof backgroundColor !== 'string') {
+            backgroundColor = '';
         }
 
         try {

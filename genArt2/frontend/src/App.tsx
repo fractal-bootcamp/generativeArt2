@@ -2,7 +2,7 @@ import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-reac
 
 import './App.css'
 import BackgroundsPage from "routes/BackgroundsPage";
-import FeedPage from "routes/FeedPage";
+import BgsFeed from "routes/BgsFeed";
 
 function App() {
 
@@ -20,7 +20,7 @@ function App() {
       </header>
       <div>
         <BackgroundsPage />
-        <FeedPage />
+        <BgsFeed />
       </div>
     </>
   )

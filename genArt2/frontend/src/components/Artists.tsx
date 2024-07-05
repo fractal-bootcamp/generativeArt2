@@ -1,6 +1,7 @@
 // src / components / Artists.tsx
 import { useState } from 'react';
-
+import { useAuth } from '@clerk/clerk-react';
+import { getArtists } from '../api/artService'
 
 type Artist = {
     id: number;
@@ -15,22 +16,39 @@ type Artist = {
 
 export default function Artists() {
     const [artists, setArtists] = useState<Artist[]>([]);
+    const { getToken } = useAuth();
 
-    const fetchArtists = async () => {
-        const response = await fetch('http://localhost:3002/artists');
-        if (response.ok) {
-            const data = await response.json();
-            setArtists(data);
-        } else {
-            console.error('Failed to fetch artists');
+
+    const handleClick = async () => {
+        try {
+            console.log('Getting token');
+            const token = await getToken(); // Replace with actual template ID
+            console.log('Token obtained:', token);
+
+            if (!token) {
+                console.error('No token found');
+                return;
+            }
+
+            const response = await getArtists(token);
+            if (response) {
+                const data = await response;
+                setArtists(data);
+            } else {
+                console.error('Failed to fetch artists');
+            }
+
+        } catch (error) {
+            console.error('Error fetching art:', error);
         }
     };
+
 
     return (
         <div style={{ padding: '20px' }}>
             <h1>Artists</h1>
             <button
-                onClick={fetchArtists}
+                onClick={handleClick}
                 style={{
                     padding: '10px 20px',
                     margin: '10px 0',

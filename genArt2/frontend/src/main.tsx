@@ -12,7 +12,7 @@ import SignUpPage from './routes/sign-up';
 import ArtistsPage from './routes/ArtistsPage';
 import BackgroundsPage from './routes/BackgroundsPage'; // Added import
 import ProtectedRoute from './components/ProtectedRoute.tsx';
-import FeedPage from './routes/FeedPage.tsx'; // Added import
+import BgsFeed from './routes/BgsFeed.tsx';
 
 const router = createBrowserRouter([
   {
@@ -38,10 +38,10 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/feed",
+        path: "/feed-backgrounds",
         element: (
           <ProtectedRoute>
-            <FeedPage />
+            <BgsFeed />
           </ProtectedRoute>
         ),
       },

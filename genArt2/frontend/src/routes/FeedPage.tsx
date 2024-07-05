@@ -1,5 +1,5 @@
 import React from 'react'
-import Feed from '../components/Feed'
+import Feed from '../components/BgsFeed'
 
 const FeedPage: React.FC = () => {
     return (
