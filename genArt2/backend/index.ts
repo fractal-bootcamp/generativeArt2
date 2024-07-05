@@ -1,9 +1,10 @@
 import express from 'express';
 import type { Request, Response } from 'express';
 import { requireAuth, type ClerkMiddlewareOptions } from '@clerk/clerk-sdk-node';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client'; // Import the User type from '@prisma/client'
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import type { User, Warnsdorff, Token, Art } from '../shared/types/models';
 
 const app = express();
 const prisma = new PrismaClient();
@@ -133,6 +134,56 @@ app.post('/backgrounds', requireAuth(handler, options), async (req: Request, res
         res.status(500).json({ error: 'Failed to save background' });
     }
 });
+
+
+// Endpoint to save boardState from chess game
+app.post('/chess', requireAuth(handler, options), async (req: Request, res: Response) => {
+    console.log('Request received on /chess');
+    console.log('Request headers:', req.headers);
+    console.log('Request body:', req.body);
+
+    const { boardSize,
+        path,
+        gigerMode }: Warnsdorff = req.body;
+    const creatorId = req.auth?.userId;  // This should match the Clerk user ID
+    console.log('BoardState:', boardSize,
+        path,
+        gigerMode);
+    console.log('Creator ID:', creatorId);
+
+    try {
+        // Ensure the user exists
+        console.log('Checking if user exists in the database...');
+        const user = await prisma.user.findUnique({
+            where: { clerkId: creatorId }  // Use clerkId to find the user
+        });
+
+        if (!user) {
+            console.log('User not found in the database');
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        console.log('Saving new art to the database...');
+        const newBoardState = await prisma.warnsdorff.create({
+            data: {
+                boardSize,
+                path,
+                gigerMode,
+                isPublished: true,
+                creatorId: user.id,  // Store the user's database ID
+            },
+        });
+        console.log('Art saved:', newBoardState);
+        res.status(200).json(newBoardState);
+    } catch (error: any) {
+        console.error('Error saving background:', error.message);
+        console.error(error.stack);
+        res.status(500).json({ error: 'Failed to save background' });
+    }
+});
+
+
+
 
 const PORT = process.env.PORT || 3002;
 app.listen(PORT, () => {

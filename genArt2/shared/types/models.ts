@@ -10,6 +10,7 @@ export interface User {
     isDeleted: boolean;
     avatarUrl?: string | null;
     arts: Art[];
+    warnsdorffs: Warnsdorff[];
 }
 
 export interface Art {
@@ -25,4 +26,17 @@ export interface Art {
 
 export interface Token {
     token: string;
+}
+
+export interface Warnsdorff {
+    id: string;
+    boardSize: number;
+    path: number[];
+    gigerMode: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+    isPublished: boolean;
+    isDeleted: boolean;
+    creatorId: string;
+    creator: User;
 }
