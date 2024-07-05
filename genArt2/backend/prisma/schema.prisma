@@ -16,12 +16,27 @@ model User {
   updatedAt DateTime @updatedAt
   isDeleted Boolean @default(false)
   avatarUrl String?
+
   arts      Art[]
+  warnsdorffs Warnsdorff[]
 }
 
 model Art {
   id          String     @id @default(cuid())
   bgcolor     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  isPublished Boolean  @default(false)
+  isDeleted   Boolean  @default(false)
+  creatorId   String
+  creator     User     @relation(fields: [creatorId], references: [id])
+}
+
+model Warnsdorff {
+  id        String     @id @default(cuid())
+  boardSize Int
+  path     Int[]
+  gigerMode Boolean
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   isPublished Boolean  @default(false)

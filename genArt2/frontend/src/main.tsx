@@ -13,6 +13,7 @@ import ArtistsPage from './routes/ArtistsPage';
 import BackgroundsPage from './routes/BackgroundsPage'; // Added import
 import ProtectedRoute from './components/ProtectedRoute.tsx';
 import BgsFeed from './routes/BgsFeed.tsx';
+import Chess from './routes/chess.tsx'
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <BackgroundsPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/chess",
+        element: (
+          <ProtectedRoute>
+            <Chess />
           </ProtectedRoute>
         ),
       },
