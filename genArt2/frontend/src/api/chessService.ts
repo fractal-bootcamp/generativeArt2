@@ -1,11 +1,12 @@
+const API_URL = 'http://localhost:3000'; // Define your backend API URL
 
 
 
-const saveBoardState = async (boardState: any, clerkId: string, token: string | null) => {
+const saveBoardState = async (boardState: object, clerkId: string, token: string | null) => {
     // Implement the logic to save the board state to your backend or storage mechanism
     // This might involve making a POST request to your backend API
 
-    const response = await fetch('http://localhost:3002/chess', {
+    const response = await fetch(`${API_URL}/chess`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

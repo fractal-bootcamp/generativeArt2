@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
 import { useAuth, useUser } from '@clerk/clerk-react';
 import saveBoardState from '../../api/chessService';
 
 
 
 interface Props {
-    size: number;
+    boardSize: number;
     path: [number, number][];
     currentStep: number;  // Controls visible steps
     gigerMode: boolean;
@@ -14,7 +13,7 @@ interface Props {
 
 const squareSize = 50; // Define the size of each square for easier reference
 
-const Board = ({ size, path, currentStep, gigerMode, toggleGigerMode }: Props) => {
+const Board = ({ boardSize, path, currentStep, gigerMode, toggleGigerMode }: Props) => {
     // State to toggle Giger style effect
 
     const { user } = useUser();
@@ -22,7 +21,7 @@ const Board = ({ size, path, currentStep, gigerMode, toggleGigerMode }: Props) =
     // Calculate the dimensions of the board
     const boardStyle = {
         display: 'grid',
-        gridTemplateColumns: `repeat(${size}, ${squareSize}px)`,
+        gridTemplateColumns: `repeat(${boardSize}, ${squareSize}px)`,
         position: 'relative', // Necessary for SVG overlay
         backgroundColor: 'black' // Entire board background
     };
@@ -72,7 +71,7 @@ const Board = ({ size, path, currentStep, gigerMode, toggleGigerMode }: Props) =
         const clerkId = user.id;
 
         const finalBoardState = {
-            size,
+            boardSize,
             path,
             gigerMode,
         };
@@ -103,9 +102,9 @@ const Board = ({ size, path, currentStep, gigerMode, toggleGigerMode }: Props) =
             </button>
             <button onClick={handleSave}>Save?</button>
             <div style={boardStyle}>
-                {Array.from({ length: size * size }).map((_, index) => {
-                    const x = Math.floor(index / size);
-                    const y = index % size;
+                {Array.from({ length: boardSize * boardSize }).map((_, index) => {
+                    const x = Math.floor(index / boardSize);
+                    const y = index % boardSize;
                     const knightNormal = isKnightHereNormal(x, y) ? 'K' : '';
                     const knightFlipped = isKnightHereFlipped(x, y) ? 'K' : '';
                     return (

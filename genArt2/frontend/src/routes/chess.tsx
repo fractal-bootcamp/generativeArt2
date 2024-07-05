@@ -11,15 +11,16 @@ const Home = () => {
     const [currentStep, setCurrentStep] = useState(0);
     const [gigerMode, setGigerMode] = useState<boolean>(false); // Add gigerMode state
 
-    const handleUpdateSize = (size: number) => {
-        setBoardSize(size);
-        const tourResult = warnsdorffsTour(size);
+    const handleUpdateSize = (boardSize: number) => {
+        setBoardSize(boardSize);
+        const tourResult = warnsdorffsTour(boardSize);
         const newPath = extractPathFromTour(tourResult);
         setPath(newPath);
         setCurrentStep(0);  // Reset current step on size change
     };
 
     const toggleGigerMode = () => {
+        console.log('Toggling Giger mode', gigerMode)
         setGigerMode(!gigerMode);
     };
 
@@ -31,7 +32,9 @@ const Home = () => {
                     return prevStep + 1;
                 } else {
                     clearInterval(timer);
+                    console.log(path)
                     return prevStep;
+
                 }
             });
         }, 10); // Update step every second
@@ -54,7 +57,7 @@ const Home = () => {
     return (
         <div>
             <Settings onUpdateSize={handleUpdateSize} />
-            <Board size={boardSize} path={path} currentStep={currentStep} gigerMode={gigerMode} toggleGigerMode={toggleGigerMode} />
+            <Board boardSize={boardSize} path={path} currentStep={currentStep} gigerMode={gigerMode} toggleGigerMode={toggleGigerMode} />
         </div>
     );
 };

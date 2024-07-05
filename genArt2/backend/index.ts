@@ -1,16 +1,37 @@
 import express from 'express';
-import type { Request, Response } from 'express';
-import { requireAuth, type ClerkMiddlewareOptions } from '@clerk/clerk-sdk-node';
+import type { Application, Request, RequestHandler, Response } from 'express';
+import { requireAuth, type ClerkMiddlewareOptions, type RequireAuthProp, type LooseAuthProp } from '@clerk/clerk-sdk-node';
 import { PrismaClient } from '@prisma/client'; // Import the User type from '@prisma/client'
-import cors from 'cors';
-import bodyParser from 'body-parser';
+
+import "dotenv/config";
+
+import { ClerkExpressWithAuth, type EmailAddress } from '@clerk/clerk-sdk-node';
+import cookieParser from 'cookie-parser';
+import optionalUser from './middleware/optionalUser';
+
 import type { User, Warnsdorff, Token, Art } from '../shared/types/models';
 
-const app = express();
+import cors from "cors";
+import bodyParser from 'body-parser';
+
+const app: Application = express();
+
+declare global {
+    namespace Express {
+        interface Request extends LooseAuthProp { }
+    }
+}
+
 const prisma = new PrismaClient();
 
 app.use(bodyParser.json());
+
 app.use(express.json());
+
+
+// allow urlencoded data to be submitted using middleware
+app.use(express.urlencoded({ extended: true }))
+
 
 // Enable CORS for all routes
 app.use(cors({
@@ -19,21 +40,24 @@ app.use(cors({
     allowedHeaders: 'Content-Type,Authorization'
 }));
 
-// Define the handler separately for clarity
-const handler = async (req: Request, res: Response) => {
-    console.log('Received POST request at /backgrounds with data:', req.body);
-    const data = req.body;
-    const json = JSON.stringify(data);
-    try {
-        // Simulate some processing
-        res.send(json);
-    } catch (error) {
-        console.error('Error processing request:', error);
-        res.status(500).send('Internal Server Error');
-    }
-};
+// clerk modifies the request by adding req.auth
+// this takes the token and communicates with clerk to get user information
+// which gets assigned to req.auth
+app.use(ClerkExpressWithAuth())
+//this is the clerk middleware we wrote for auth
+app.use(optionalUser)
+// const exampleMiddleware: RequestHandler = (req, res, next) => {
+//     // modify request
+//     req.user = {
+//         id: "1"
+//     }
+//     console.log(req.user)
+//     next()
+// }
+//on the /artfeed endpoint, create GET to pull in prisma art data
 
-const options: ClerkMiddlewareOptions = {}
+
+
 
 app.get('/feed-backgrounds', async (req: Request, res: Response) => {
     try {
@@ -95,8 +119,12 @@ app.post('/clerk-webhook', async (req, res) => {
     res.status(200).json({ error: 'Unhandled event type' });
 });
 
+
+
+
+
 // Endpoint to save background color
-app.post('/backgrounds', requireAuth(handler, options), async (req: Request, res: Response) => {
+const saveBackgroundHandler = app.post('/backgrounds', async (req: Request, res: Response) => {
     console.log('Request received on /backgrounds');
     console.log('Request headers:', req.headers);
     console.log('Request body:', req.body);
@@ -136,19 +164,18 @@ app.post('/backgrounds', requireAuth(handler, options), async (req: Request, res
 });
 
 
-// Endpoint to save boardState from chess game
-app.post('/chess', requireAuth(handler, options), async (req: Request, res: Response) => {
+// Route handler to save boardState from chess game
+const saveChessStateHandler = app.post('/chess', async (req: Request, res: Response) => {
     console.log('Request received on /chess');
     console.log('Request headers:', req.headers);
     console.log('Request body:', req.body);
 
-    const { boardSize,
-        path,
-        gigerMode }: Warnsdorff = req.body;
+    // const { boardSize, path, gigerMode }: Warnsdorff = req.body;
+    const body = req.body;
     const creatorId = req.auth?.userId;  // This should match the Clerk user ID
-    console.log('BoardState:', boardSize,
-        path,
-        gigerMode);
+
+    console.log('This is the creatorId:', creatorId);
+    console.log('BoardState:', body.boardState);
     console.log('Creator ID:', creatorId);
 
     try {
@@ -163,29 +190,27 @@ app.post('/chess', requireAuth(handler, options), async (req: Request, res: Resp
             return res.status(404).json({ error: 'User not found' });
         }
 
-        console.log('Saving new art to the database...');
+        console.log('Saving new board state to the database...');
         const newBoardState = await prisma.warnsdorff.create({
             data: {
-                boardSize,
-                path,
-                gigerMode,
+                ...body.boardState,
                 isPublished: true,
                 creatorId: user.id,  // Store the user's database ID
             },
         });
-        console.log('Art saved:', newBoardState);
+        console.log('Board state saved:', newBoardState);
         res.status(200).json(newBoardState);
     } catch (error: any) {
-        console.error('Error saving background:', error.message);
+        console.error('Error saving board state:', error.message);
         console.error(error.stack);
-        res.status(500).json({ error: 'Failed to save background' });
+        res.status(500).json({ error: 'Failed to save board state' });
     }
 });
 
 
 
 
-const PORT = process.env.PORT || 3002;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
