@@ -9,7 +9,6 @@ export default function IndexPage() {
           <ul>
             <li><Link to="/sign-up">Sign Up</Link></li>
             <li><Link to="/sign-in">Sign In</Link></li>
-
             <li><Link to="/backgrounds">Background Loft</Link></li>
             <li><Link to="/chess">Warnsdorff's Tour</Link></li>
             <li><Link to="/feed-backgrounds">Arts! made! by! R.e.a.l. .:. Humans! 4 real 4 laif</Link></li>
