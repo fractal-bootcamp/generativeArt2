@@ -1,39 +1,16 @@
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Courier New', Courier, monospace;
   line-height: 1.5;
   font-weight: 400;
-
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
+  color: #0d0a0a; /* Black text for better readability on white background */
+  background-color: #ffffff; /* White background */
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
 
 button {
   border-radius: 8px;
@@ -43,12 +20,15 @@ button {
   font-weight: 500;
   font-family: inherit;
   background-color: #1a1a1a;
+  color: #ffffff; /* White text for better contrast */
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -59,10 +39,79 @@ button:focus-visible {
     color: #213547;
     background-color: #ffffff;
   }
+
   a:hover {
     color: #747bff;
   }
+
   button {
     background-color: #f9f9f9;
+    color: #000; /* Black text for better contrast */
   }
+}
+
+.feed-container-2 {
+
+  width: 100%; /* Ensure the feed container takes full width */
+  height: 100%;
+  padding: 30px; /* Padding around the grid container */
+}
+
+.feed-list-2 {
+  box-sizing: border-box;
+width: 100%;
+
+padding: 5px;
+}
+
+
+.art-item {
+  width: 100px;
+  height: 70px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.main-box-homePage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  margin: 20px;
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  color: #100c0c; /* White text for better contrast */
+  width: 100%;
+  max-width: 1200px;
+  box-sizing: border-box; /* Include padding in the width calculation */
+}
+
+
+.grid-container {
+  
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 30px;
+  padding: 30px;
+  width: 100%;
+  height: 100vh;
+}
+
+.grid-item {
+  width: 100px;
+  height: 70px;
+  background-color: lightblue;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #ccc;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
 }

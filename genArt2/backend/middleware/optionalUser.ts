@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 
 type User = {
     id: string;
+    name: string;
     email: string;
     clerkId: string;
     createdAt: Date;
@@ -67,8 +68,12 @@ const optionalUser: RequestHandler = async (req, res, next) => {
             const email = clerkUser.emailAddresses[0].emailAddress;
             // create a new user in the database with the Clerk user ID and email
             //extracted from above
+
+            const name: string = clerkUser.fullName ?? '';
+
             const newUser = await prisma.user.create({
                 data: {
+                    name,
                     clerkId,
                     email
                 }

@@ -9,11 +9,15 @@ import RootLayout from './layouts/root-layout';
 import IndexPage from './routes';
 import SignInPage from './routes/sign-in';
 import SignUpPage from './routes/sign-up';
+import AboutUs from './routes/AboutUs';
 import ArtistsPage from './routes/ArtistsPage';
 import BackgroundsPage from './routes/BackgroundsPage'; // Added import
 import ProtectedRoute from './components/ProtectedRoute.tsx';
 import BgsFeed from './routes/BgsFeed.tsx';
 import Chess from './routes/chess.tsx'
+import GalleryPage from './routes/GalleryPage.tsx';
+import Artists from './components/Artists.tsx';
+import EmptyGallery from './components/EmptyGallery.tsx';
 
 const router = createBrowserRouter([
   {
@@ -22,14 +26,6 @@ const router = createBrowserRouter([
       { path: "/", element: <IndexPage /> },
       { path: "/sign-in/*", element: <SignInPage /> },
       { path: "/sign-up/*", element: <SignUpPage /> },
-      {
-        path: "/artists",
-        element: (
-          <ProtectedRoute>
-            <ArtistsPage />
-          </ProtectedRoute>
-        ),
-      },
       {
         path: "/backgrounds",
         element: (
@@ -54,6 +50,36 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+      {
+        path: "/gallery",
+        element: (
+          <ProtectedRoute>
+            <GalleryPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/artists',
+        element: (
+          <ProtectedRoute>
+            <ArtistsPage />
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: '/empty-gallery',
+        element: (
+          <ProtectedRoute>
+            <EmptyGallery />
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: '/about',
+        element: (
+          <AboutUs />
+        )
+      }
     ],
   },
 ]);

@@ -70,6 +70,30 @@ app.get('/feed-backgrounds', async (req: Request, res: Response) => {
 });
 
 
+
+
+app.get('/gallery', async (req: Request, res: Response) => {
+    try {
+        const dataArt = await prisma.art.findMany();
+        const dataWarnsdorff = await prisma.warnsdorff.findMany();
+
+        // Combine both data sets into a single object
+        const responseData = {
+            art: dataArt,
+            warnsdorff: dataWarnsdorff
+        };
+
+        // Send the combined response
+        res.json(responseData);
+
+    } catch (error: any) {
+        console.error('Error fetching backgrounds:', error.message);
+        res.status(500).json({ error: 'Failed to fetch backgrounds' });
+    }
+});
+
+
+
 app.get('/artists', async (req: Request, res: Response) => {
     try {
         const data = await prisma.art.findMany();
@@ -171,11 +195,10 @@ const saveChessStateHandler = app.post('/chess', async (req: Request, res: Respo
     console.log('Request body:', req.body);
 
     // const { boardSize, path, gigerMode }: Warnsdorff = req.body;
-    const body = req.body;
+    const { boardSize, path, currentStep, gigerMode, clerkId } = req.body;
     const creatorId = req.auth?.userId;  // This should match the Clerk user ID
 
     console.log('This is the creatorId:', creatorId);
-    console.log('BoardState:', body.boardState);
     console.log('Creator ID:', creatorId);
 
     try {
@@ -193,7 +216,10 @@ const saveChessStateHandler = app.post('/chess', async (req: Request, res: Respo
         console.log('Saving new board state to the database...');
         const newBoardState = await prisma.warnsdorff.create({
             data: {
-                ...body.boardState,
+                boardSize,
+                path: path as [number, number][],
+                currentStep,
+                gigerMode,
                 isPublished: true,
                 creatorId: user.id,  // Store the user's database ID
             },

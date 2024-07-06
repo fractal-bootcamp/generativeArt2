@@ -13,8 +13,11 @@ export default function RootLayout() {
                     <UserButton />
                 </SignedIn>
                 <nav>
-                    <Link to="/">Home</Link>
-                    <Link to="/artists">Artists</Link> {/* Ensure this link is correct */}
+                    <Link to="/"> * Home * </Link>
+                    <Link to="/sign-up">Sign Up * </Link>
+                    <Link to="/sign-in">Sign In * </Link>
+                    <Link to="/about">About Us * </Link>
+                    <Link to="/artists">Artists * </Link>
                 </nav>
             </header>
             <main>

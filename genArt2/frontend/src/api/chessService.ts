@@ -1,8 +1,7 @@
 const API_URL = 'http://localhost:3000'; // Define your backend API URL
 
 
-
-const saveBoardState = async (boardState: object, clerkId: string, token: string | null) => {
+const saveBoardState = async (boardSize: number, path: [number, number][], currentStep: number, gigerMode: boolean, clerkId: string, token: string | null) => {
     // Implement the logic to save the board state to your backend or storage mechanism
     // This might involve making a POST request to your backend API
 
@@ -13,8 +12,11 @@ const saveBoardState = async (boardState: object, clerkId: string, token: string
             'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-            clerkId,
-            boardState
+            boardSize,
+            path,
+            currentStep,
+            gigerMode,
+            clerkId
         })
     });
 

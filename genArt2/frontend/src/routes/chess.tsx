@@ -57,7 +57,11 @@ const Home = () => {
     return (
         <div>
             <Settings onUpdateSize={handleUpdateSize} />
-            <Board boardSize={boardSize} path={path} currentStep={currentStep} gigerMode={gigerMode} toggleGigerMode={toggleGigerMode} />
+            <Board boardSize={boardSize}
+                path={path}
+                currentStep={currentStep}
+                gigerMode={gigerMode}
+                toggleGigerMode={toggleGigerMode} />
         </div>
     );
 };

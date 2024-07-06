@@ -1,18 +1,18 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 export default function IndexPage() {
+
   return (
     <>
-      <div>
-        <h1>This is the index page</h1>
+      <div className="main-box-homePage">
+        <h1>The moving gallery</h1>
         <div>
           <ul>
-            <li><Link to="/sign-up">Sign Up</Link></li>
-            <li><Link to="/sign-in">Sign In</Link></li>
-            <li><Link to="/backgrounds">Background Loft</Link></li>
-            <li><Link to="/chess">Warnsdorff's Tour</Link></li>
-            <li><Link to="/feed-backgrounds">Arts! made! by! R.e.a.l. .:. Humans! 4 real 4 laif</Link></li>
-            <li><Link to="/artists">Meet our Artishtsh</Link></li>
+
+            <li><Link to="/backgrounds">Come to the Background Loft and create new ones</Link></li>
+            <li><Link to="/chess">Explore Warnsdorff's algorithm</Link></li>
+            <li><Link to="/gallery">Meet our gallery</Link></li>
           </ul>
         </div>
       </div>

@@ -29,8 +29,12 @@ const Backgrounds: React.FC = () => {
             return;
         }
 
+
         const clerkId = user.id;
         let backgroundColor = document.body.style.backgroundColor || '';
+        if (backgroundColor === null) {
+            backgroundColor = '';
+        }
 
         if (backgroundColor === null) {
             backgroundColor = '';
@@ -68,6 +72,7 @@ const Backgrounds: React.FC = () => {
         }
 
         const clerkId = user.id;
+        const name = user.fullName;
         let backgroundColor = document.body.style.backgroundColor || '';
 
         if (backgroundColor === null) {
@@ -78,9 +83,10 @@ const Backgrounds: React.FC = () => {
             const token = await getToken();
             console.log('Clerk ID:', clerkId);
             console.log('Token obtained:', token);
+            console.log('Name:', name);
             console.log('Background color:', backgroundColor);
 
-            const result = await saveArt(backgroundColor, clerkId, token);
+            const result = await saveArt(name, backgroundColor, clerkId, token);
 
             if (result) {
                 alert('Art saved successfully!');

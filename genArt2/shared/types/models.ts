@@ -31,7 +31,7 @@ export interface Token {
 export interface Warnsdorff {
     id: string;
     boardSize: number;
-    path: number[];
+    path: [number, number][];
     gigerMode: boolean;
     createdAt: Date;
     updatedAt: Date;

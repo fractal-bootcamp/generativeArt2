@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
@@ -35,7 +36,8 @@ model Art {
 model Warnsdorff {
   id        String     @id @default(cuid())
   boardSize Int
-  path     Int[]
+  path     Json
+  currentStep Int
   gigerMode Boolean
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

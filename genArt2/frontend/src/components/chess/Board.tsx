@@ -1,44 +1,43 @@
+import React from 'react';
 import { useAuth, useUser } from '@clerk/clerk-react';
 import saveBoardState from '../../api/chessService';
 
-
-
-interface Props {
+export interface BoardProps {
     boardSize: number;
     path: [number, number][];
-    currentStep: number;  // Controls visible steps
+    currentStep: number;
     gigerMode: boolean;
-    toggleGigerMode: () => void; // Add toggleGigerMode to props
+    toggleGigerMode: () => void;
+    responsive?: boolean; // Optional responsive prop
 }
 
-const squareSize = 50; // Define the size of each square for easier reference
-
-const Board = ({ boardSize, path, currentStep, gigerMode, toggleGigerMode }: Props) => {
-    // State to toggle Giger style effect
-
+const Board = ({ boardSize, path, currentStep, gigerMode, toggleGigerMode, responsive = false }: BoardProps) => {
     const { user } = useUser();
     const { getToken } = useAuth();
-    // Calculate the dimensions of the board
+
+    const squareSize = responsive ? 10 : 50; // Smaller squares for responsive mode
+
     const boardStyle = {
         display: 'grid',
-        gridTemplateColumns: `repeat(${boardSize}, ${squareSize}px)`,
-        position: 'relative', // Necessary for SVG overlay
-        backgroundColor: 'black' // Entire board background
+        gridTemplateColumns: `repeat(${boardSize}, ${responsive ? '1fr' : `${squareSize}px`})`,
+        position: 'relative',
+        backgroundColor: 'black',
+        width: responsive ? '100%' : `${boardSize * squareSize}px`,
+        height: responsive ? 'auto' : `${boardSize * squareSize}px`,
+
+        boxSizing: 'border-box',
     };
 
-    // Helper function to convert board coordinates to pixel coordinates
     const getPixelCoordinates = (x: number, y: number) => ({
         px: y * squareSize + squareSize / 2,
         py: x * squareSize + squareSize / 2
     });
 
-    // Flipped axes helper
     const getFlippedPixelCoordinates = (x: number, y: number) => ({
         px: x * squareSize + squareSize / 2,
         py: y * squareSize + squareSize / 2
     });
 
-    // Determine if the knight is here for normal and flipped paths
     const isKnightHereNormal = (x: number, y: number) => {
         return path.length && path[currentStep] && path[currentStep][0] === x && path[currentStep][1] === y;
     };
@@ -46,7 +45,6 @@ const Board = ({ boardSize, path, currentStep, gigerMode, toggleGigerMode }: Pro
         return path.length && path[currentStep] && path[currentStep][0] === y && path[currentStep][1] === x;
     };
 
-    // SVG filter for Giger effect
     const gigerFilter = (
         <defs>
             <filter id="gigerEffect">
@@ -56,33 +54,21 @@ const Board = ({ boardSize, path, currentStep, gigerMode, toggleGigerMode }: Pro
         </defs>
     );
 
-
     const handleSave = async () => {
-
-
-
-        console.log('handleSave invoked');
-
         if (!user) {
             alert('You must be logged in to save art.');
             return;
         }
 
         const clerkId = user.id;
-
-        const finalBoardState = {
-            boardSize,
-            path,
-            gigerMode,
-        };
+        const finalBoardSize = boardSize;
+        const finalPath = path;
+        const finalGigerMode = gigerMode;
+        const finalCurrentStep = currentStep;
 
         try {
             const token = await getToken();
-            console.log('Clerk ID:', clerkId);
-            console.log('Token obtained:', token);
-            console.log('Board State:', finalBoardState);
-
-            const result = await saveBoardState(finalBoardState, clerkId, token);
+            const result = await saveBoardState(finalBoardSize, finalPath, finalCurrentStep, finalGigerMode, clerkId, token);
 
             if (result) {
                 alert('Art saved successfully!');
@@ -110,17 +96,17 @@ const Board = ({ boardSize, path, currentStep, gigerMode, toggleGigerMode }: Pro
                     return (
                         <div key={index} style={{
                             width: squareSize, height: squareSize, borderRadius: 0,
-                            backgroundColor: 'black', // Each square is black
+                            backgroundColor: 'black',
                             display: 'flex', justifyContent: 'center', alignItems: 'center',
                             color: knightNormal ? '#00008B' : (knightFlipped ? '#8B0000' : 'black'),
-                            fontSize: '20px', fontWeight: 'bold'
+                            fontSize: responsive ? '10px' : '20px', fontWeight: 'bold'
                         }}>
                             {knightNormal || knightFlipped}
                         </div>
                     );
                 })}
                 <svg style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}>
-                    {gigerMode && gigerFilter} {/* Include Giger filter if Giger mode is enabled */}
+                    {gigerMode && gigerFilter}
                     {path.slice(0, currentStep).map((pos, index) => {
                         if (index === 0) return null;
                         const { px: startX, py: startY } = getPixelCoordinates(...path[index - 1]);
